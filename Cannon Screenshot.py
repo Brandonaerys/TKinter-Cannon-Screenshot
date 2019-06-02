@@ -36,12 +36,13 @@ class App:
 
         self.vid = VideoCapture(self.video_source)
         self.canvas = tk.Canvas(self.window, width = self.vid.width, height = self.vid.height)
+
+
+
+        self.btn_screenshot=tk.Button(self.window, text="Screenshot", width=50, command=self.screenshot)
+        self.btn_screenshot.pack(anchor=tk.CENTER, expand=True)
+
         self.canvas.pack()
-
-
-        self.btn_screenshot=tk.Button(window, text="Screenshot", width=50, command=self.screenshot)
-        self.btn_screenshot.pack(anchor=tk.W, expand=True)
-
         self.delay = 5
         self.update()
 
@@ -50,18 +51,21 @@ class App:
 
         # Callback for button
     def screenshot(self):
-        ret, cap_frame = self.vid.get_frame()
-        self.newTK = tk.Tk()
-        self.picture = tk.Canvas(self.newTK, width = self.vid.width, height = self.vid.height)
-        self.img = cv.cvtColor(cap_frame, cv.COLOR_BGR2RGB)
-        self.pht = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.img))
-        self.picture.create_image(0, 0, image=self.pht, anchor=tk.NW)
+        ret, orig_frame = self.vid.get_frame()
+        self.newTk = tk.Tk()
+        self.picture = tk.Canvas(self.newTk, width = self.vid.width, height = self.vid.height)
+        self.picture.pack()
+        frame = cv.cvtColor(orig_frame, cv.COLOR_BGR2RGB)
+        self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
+        self.picture.create_image(0, 0, image=self.photo, anchor=tk.NW)
+
         # bind canvas events
         self.picture.bind("<ButtonPress-1>", self.Press)
         self.picture.bind("<ButtonRelease-1>", self.Release)
         self.picture.bind("<Return>", self.LengthCalculator)
         self.picture.pack()
         self.picture.focus_set()
+        self.newTk.mainloop()
 
         self.Press = [[-1,-1], [-1,-1]]
         self.Release = [[-1,-1], [-1,-1]]
