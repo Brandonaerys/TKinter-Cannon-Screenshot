@@ -27,18 +27,18 @@ class VideoCapture:
             return (ret, None)
 
 class Screenshot:
-    def __init__(self, video_source):
-        self.vid = VideoCapture(video_source)
-        ret, orig_frame = self.vid.get_frame()
+    def __init__(self, frame, Width, Height, window):
+        self.frame = frame
+        cv.imshow("frame", self.frame)
+        self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.frame))
         self.newTk = tk.Tk()
         self.newTk.name = "Screenshot"
-        self.picture = tk.Canvas(self.newTk, width = self.vid.width, height = self.vid.height)
+        self.picture = tk.Canvas(self.newTk, width = Width, height = Height)
 
         self.picture.bind("<ButtonPress-1>", self.Press)
         self.picture.bind("<ButtonRelease-1>", self.Release)
         self.picture.bind("<Return>", self.LengthCalculator)
         self.picture.pack()
-        self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(orig_frame))
         self.picture.create_image(0, 0, image=self.photo, anchor=tk.NW)
         self.picture.focus_set()
         self.newTk.mainloop()
@@ -87,12 +87,12 @@ class App:
         self.window.mainloop()
 
     def screenshot(self):
-        obj = Screenshot(self.video_source)
+        self.obj = Screenshot(self.orig_frame, self.vid.width, self.vid.height, self.window)
 
     def update(self):
-        ret, orig_frame = self.vid.get_frame()
+        ret, self.orig_frame = self.vid.get_frame()
         if ret:
-            self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(orig_frame))
+            self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.orig_frame))
             self.canvas.create_image(0, 0, image = self.photo, anchor = tk.NW)
         self.window.after(self.delay, self.update)
 
