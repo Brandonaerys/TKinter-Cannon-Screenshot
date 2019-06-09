@@ -12,13 +12,13 @@ class VideoCapture:
         if not self.vid.isOpened():
             raise ValueError("Unable to open video source", video_source)
         # Get video source width and height
-        self.width = self.vid.get(cv.CAP_PROP_FRAME_WIDTH)/2
-        self.height = self.vid.get(cv.CAP_PROP_FRAME_HEIGHT)/2
+        self.width = self.vid.get(cv.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv.CAP_PROP_FRAME_HEIGHT)
 
     def get_frame(self):
         if self.vid.isOpened():
             ret, frame = self.vid.read()
-            frame = frame[::2,::2]
+            # frame = frame[::2,::2]
             if ret:
                 # Return a boolean success flag and the current frame converted to BGR
                 return (ret, cv.cvtColor(frame, cv.COLOR_BGR2RGB))
@@ -99,4 +99,4 @@ class App:
 
 
 # Create a window and pass it to the Application object
-App(tk.Tk(), "Video Feed", "./Test_RLWBBC_1.MOV")
+App(tk.Tk(), "Video Feed", "./2019-06-09 17.10.27.448852.avi")
