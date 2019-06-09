@@ -12,12 +12,13 @@ class VideoCapture:
         if not self.vid.isOpened():
             raise ValueError("Unable to open video source", video_source)
         # Get video source width and height
-        self.width = self.vid.get(cv.CAP_PROP_FRAME_WIDTH)
-        self.height = self.vid.get(cv.CAP_PROP_FRAME_HEIGHT)
+        self.width = self.vid.get(cv.CAP_PROP_FRAME_WIDTH)/2
+        self.height = self.vid.get(cv.CAP_PROP_FRAME_HEIGHT)/2
 
     def get_frame(self):
         if self.vid.isOpened():
             ret, frame = self.vid.read()
+            frame = frame[::2,::2]
             if ret:
                 # Return a boolean success flag and the current frame converted to BGR
                 return (ret, cv.cvtColor(frame, cv.COLOR_BGR2RGB))
@@ -27,11 +28,11 @@ class VideoCapture:
             return (ret, None)
 
 class Screenshot:
-    def __init__(self, frame, Width, Height, window):
+    def __init__(self, frame, Width, Height, parent):
         self.frame = frame
-        cv.imshow("frame", self.frame)
+        # cv.imshow("frame", self.frame)
         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.frame))
-        self.newTk = tk.Tk()
+        self.newTk = tk.Toplevel(parent)
         self.newTk.name = "Screenshot"
         self.picture = tk.Canvas(self.newTk, width = Width, height = Height)
 
@@ -41,7 +42,7 @@ class Screenshot:
         self.picture.pack()
         self.picture.create_image(0, 0, image=self.photo, anchor=tk.NW)
         self.picture.focus_set()
-        self.newTk.mainloop()
+        #self.newTk.mainloop()
 
         self.Press = [[-1,-1], [-1,-1]]
         self.Release = [[-1,-1], [-1,-1]]
