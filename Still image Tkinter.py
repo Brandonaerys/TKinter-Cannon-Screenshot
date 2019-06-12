@@ -4,21 +4,20 @@ import cv2 as cv
 
 
 class App:
-    def __init__(self):
+    def __init__(self, name, filename):
         self.window = tk.Tk()
-        self.newTk = tk.Toplevel(self.window)
-        self.newTk.name = "Screenshot"
-        self.frame = cv.imread('./Analogue screenshot.jpg')
+        self.window.name = name
+        self.frame = cv.imread(filename)
         #
-        self.frame = self.frame[::2,::2]
+        # self.frame = self.frame[::2,::2]
         #
         self.height, self.width, self.channels = self.frame.shape
         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.frame))
-        self.picture = tk.Canvas(self.newTk, width = self.width, height = self.height)
+        self.picture = tk.Canvas(self.window, width = self.width, height = self.height)
         #event bindings here
         self.picture.bind("<ButtonPress-1>", self.PressOne)
         self.picture.bind("<ButtonPress-3>", self.PressThree)
-        self.btn_cal=tk.Button(self.newTk, text="Calculate", width=50, command=self.Calculate)
+        self.btn_cal=tk.Button(self.window, text="Calculate", width=50, command=self.Calculate)
         self.btn_cal.pack(anchor=tk.CENTER, expand=True)
         self.picture.pack()
         self.picture.create_image(0, 0, image=self.photo, anchor=tk.NW)
@@ -69,7 +68,7 @@ class App:
 
     def Calculate(self):
         self.DistanceRatio = self.ThreeDistance / self.OneDistance
-        self.OneActual = int(input("actual length for left click"))
+        self.OneActual = float(input("actual length for left click"))
         self.ThreeActual = self.OneActual * self.DistanceRatio
         print(self.ThreeActual)
-App()
+App("Image", './Analogue_screenshot.jpg')

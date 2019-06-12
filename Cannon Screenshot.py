@@ -12,13 +12,12 @@ class VideoCapture:
         if not self.vid.isOpened():
             raise ValueError("Unable to open video source", video_source)
         # Get video source width and height
-        self.width = self.vid.get(cv.CAP_PROP_FRAME_WIDTH) / 2
-        self.height = self.vid.get(cv.CAP_PROP_FRAME_HEIGHT) /2
+        self.width = self.vid.get(cv.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv.CAP_PROP_FRAME_HEIGHT)
 
     def get_frame(self):
         if self.vid.isOpened():
             ret, frame = self.vid.read()
-            frame = frame[::2,::2]
             if ret:
                 # Return a boolean success flag and the current frame converted to BGR
                 return (ret, cv.cvtColor(frame, cv.COLOR_BGR2RGB))
@@ -88,7 +87,7 @@ class Screenshot:
         self.ThreeMidpoint = [(self.ThreeX[0] + self.ThreeX[1])/2, (self.ThreeY[0] + self.ThreeY[1])/2]
         self.picture.create_line(self.OneMidpoint, self.ThreeMidpoint, width = 4, fill = "black", smooth = 1)
         self.LengthDistance = (((self.ThreeMidpoint[0] - self.OneMidpoint[0]) ** 2) + ((self.ThreeMidpoint[1] - self.OneMidpoint[1]) ** 2)) ** 0.5
-        self.OneActual = int(input("actual length for left click: "))
+        self.OneActual = float(input("actual length for left click: "))
         self.ThreeActual = self.OneActual * self.DiameterRatio
         print("Right Click Diameter", self.ThreeActual)
         self.LengthRatio = self.LengthDistance / self.OneDistance
