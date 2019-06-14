@@ -9,11 +9,11 @@ class App:
         self.window.name = name
         self.frame = cv.imread(filename)
         #
-        # self.frame = self.frame[::2,::2]
+        self.frame = self.frame[::2,::2]
         #
         self.height, self.width, self.channels = self.frame.shape
         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.frame))
-        self.picture = tk.Canvas(self.window, width = self.width, height = self.height)
+        self.picture = tk.Canvas(self.window, width = self.width, height = self.height, cursor = "crosshair")
         #event bindings here
         self.picture.bind("<ButtonPress-1>", self.PressOne)
         self.picture.bind("<ButtonPress-3>", self.PressThree)
@@ -25,6 +25,7 @@ class App:
         # initiate variables
         self.lineOne = self.picture.create_line(0, 0, 1, 1, width = 4, fill = "blue", smooth = 1)
         self.lineThree = self.picture.create_line(0, 0, 1, 1, width = 4, fill = "blue", smooth = 1)
+        self.black = self.picture.create_line(0, 0, 1, 1, width = 4, fill = "blue", smooth = 1)
         self.OneX = [-1 for i in range (0, 2)]
         self.OneY = [-1 for i in range (0, 2)]
         self.ThreeX = [-1 for i in range (0, 2)]
@@ -67,8 +68,20 @@ class App:
 
 
     def Calculate(self):
-        self.DistanceRatio = self.ThreeDistance / self.OneDistance
-        self.OneActual = float(input("actual length for left click"))
-        self.ThreeActual = self.OneActual * self.DistanceRatio
-        print(self.ThreeActual)
-App("Image", './Analogue_screenshot.jpg')
+        # self.DistanceRatio = self.ThreeDistance / self.OneDistance
+        # self.OneActual = float(input("actual length for left click"))
+        # self.ThreeActual = self.OneActual * self.DistanceRatio
+        # print(self.ThreeActual)
+        self.picture.delete(self.black)
+        self.DiameterRatio = self.ThreeDistance / self.OneDistance
+        self.OneMidpoint = [(self.OneX[0] + self.OneX[1])/2, (self.OneY[0] + self.OneY[1])/2]
+        self.ThreeMidpoint = [(self.ThreeX[0] + self.ThreeX[1])/2, (self.ThreeY[0] + self.ThreeY[1])/2]
+        self.black = self.picture.create_line(self.OneMidpoint, self.ThreeMidpoint, width = 4, fill = "black", smooth = 1)
+        self.LengthDistance = (((self.ThreeMidpoint[0] - self.OneMidpoint[0]) ** 2) + ((self.ThreeMidpoint[1] - self.OneMidpoint[1]) ** 2)) ** 0.5
+        self.OneActual = float(input("actual length for left click: "))
+        self.ThreeActual = self.OneActual * self.DiameterRatio
+        print("Right Click Diameter", self.ThreeActual)
+        self.LengthRatio = self.LengthDistance / self.OneDistance
+        self.LengthActual = self.OneActual * self.LengthRatio
+        print("Length", self.LengthActual)
+App("Image", './20190516_110012.jpg')
